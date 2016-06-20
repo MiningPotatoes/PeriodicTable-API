@@ -121,91 +121,96 @@ $electrons = [
 	'Uuo' => ['block' => 'p']
 ];
 
-function electron_config($element_number, $shortened = false) {
-	// Check for exceptions
-	$exceptions = [
-		24 => '1s2 2s2 2p6 3s2 3p6 4s1 3d5',
-		29 => '1s2 2s2 2p6 3s2 3p6 4s1 3d10',
-		41 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 5s1 4d4',
-		42 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 5s1 4d5',
-		44 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 5s1 4d7',
-		45 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 5s1 4d8',
-		46 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 4d10',
-		47 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 5s1 4d10',
-		57 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 5s2 4d10 5p6 6s2 5d1',
-		58 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 5s2 4d10 5p6 6s2 4f1 5d1',
-		64 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 5s2 4d10 5p6 6s2 4f7 5d1',
-		78 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 5s2 4d10 5p6 6s1 4f14 5d9',
-		79 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 5s2 4d10 5p6 6s1 4f14 5d10',
-		89 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 5s2 4d10 5p6 6s2 4f14 5d10 6p6 7s2 6d1',
-		90 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 5s2 4d10 5p6 6s2 4f14 5d10 6p6 7s2 6d2',
-		91 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 5s2 4d10 5p6 6s2 4f14 5d10 6p6 7s2 5f2 6d1',
-		92 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 5s2 4d10 5p6 6s2 4f14 5d10 6p6 7s2 5f3 6d1',
-		93 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 5s2 4d10 5p6 6s2 4f14 5d10 6p6 7s2 5f4 6d1',
-		96 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 5s2 4d10 5p6 6s2 4f14 5d10 6p6 7s2 5f7 6d1',
-		103 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 5s2 4d10 5p6 6s2 4f14 5d10 6p6 7s2 5f14 7p1'
-	];
-	if(array_key_exists($element_number, $exceptions)) {
-		$notation_exception = $exceptions[$element_number];
-	}
-	
-	$orbital_capacity = [
-		's' => 2,
-		'p' => 6,
-		'd' => 10,
-		'f' => 14
-	];
-	
-	$notation_order = [
-		'1s', '2s', '2p', '3s', '3p',
-		'4s', '3d', '4p', '5s',	'4d',
-		'5p', '6s', '4f', '5d', '6p',
-		'7s', '5f', '6d', '7p', '8s',
-	];
-	
-	$electrons = $element_number;
-	$notation = '';
-	
-	foreach($notation_order as $orbital) {
-		$orbital_type = substr($orbital, -1);
-		$orbital_value = 0;
-		while($electrons > 0 && $orbital_value < $orbital_capacity[$orbital_type]) {
-			$orbital_value++;
-			$electrons--;
+// hack for tests
+// todo refactor
+if (!function_exists('electron_config')) {
+	function electron_config($element_number, $shortened = false)
+	{
+		// Check for exceptions
+		$exceptions = [
+				24 => '1s2 2s2 2p6 3s2 3p6 4s1 3d5',
+				29 => '1s2 2s2 2p6 3s2 3p6 4s1 3d10',
+				41 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 5s1 4d4',
+				42 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 5s1 4d5',
+				44 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 5s1 4d7',
+				45 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 5s1 4d8',
+				46 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 4d10',
+				47 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 5s1 4d10',
+				57 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 5s2 4d10 5p6 6s2 5d1',
+				58 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 5s2 4d10 5p6 6s2 4f1 5d1',
+				64 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 5s2 4d10 5p6 6s2 4f7 5d1',
+				78 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 5s2 4d10 5p6 6s1 4f14 5d9',
+				79 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 5s2 4d10 5p6 6s1 4f14 5d10',
+				89 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 5s2 4d10 5p6 6s2 4f14 5d10 6p6 7s2 6d1',
+				90 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 5s2 4d10 5p6 6s2 4f14 5d10 6p6 7s2 6d2',
+				91 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 5s2 4d10 5p6 6s2 4f14 5d10 6p6 7s2 5f2 6d1',
+				92 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 5s2 4d10 5p6 6s2 4f14 5d10 6p6 7s2 5f3 6d1',
+				93 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 5s2 4d10 5p6 6s2 4f14 5d10 6p6 7s2 5f4 6d1',
+				96 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 5s2 4d10 5p6 6s2 4f14 5d10 6p6 7s2 5f7 6d1',
+				103 => '1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 5s2 4d10 5p6 6s2 4f14 5d10 6p6 7s2 5f14 7p1'
+		];
+		if (array_key_exists($element_number, $exceptions)) {
+			$notation_exception = $exceptions[$element_number];
 		}
-		$notation .= $orbital . $orbital_value;
-		if($electrons === 0) {
-			break;
-		} else {
-			$notation .= ' ';
-		}
-	}
-	
-	if(isset($notation_exception)) {
-		$notation = $notation_exception;
-	}
-	
-	// Optionally shorten the notation
-	$noble_gases = [
-		'He' => 2,
-		'Ne' => 10,
-		'Ar' => 18,
-		'Kr' => 36,
-		'Xe' => 54,
-		'Rn' => 86,
-	];
-	
-	if($shortened) {
-		foreach(array_reverse($noble_gases) as $key => $gas) {
-			if($element_number > $gas) {
-				$replace_notation = electron_config($gas, false, 0);
-				$shortened_notation = '[' . $key . ']';
-				return str_replace($replace_notation, $shortened_notation, $notation);
+
+		$orbital_capacity = [
+				's' => 2,
+				'p' => 6,
+				'd' => 10,
+				'f' => 14
+		];
+
+		$notation_order = [
+				'1s', '2s', '2p', '3s', '3p',
+				'4s', '3d', '4p', '5s', '4d',
+				'5p', '6s', '4f', '5d', '6p',
+				'7s', '5f', '6d', '7p', '8s',
+		];
+
+		$electrons = $element_number;
+		$notation = '';
+
+		foreach ($notation_order as $orbital) {
+			$orbital_type = substr($orbital, -1);
+			$orbital_value = 0;
+			while ($electrons > 0 && $orbital_value < $orbital_capacity[$orbital_type]) {
+				$orbital_value++;
+				$electrons--;
+			}
+			$notation .= $orbital . $orbital_value;
+			if ($electrons === 0) {
+				break;
+			} else {
+				$notation .= ' ';
 			}
 		}
+
+		if (isset($notation_exception)) {
+			$notation = $notation_exception;
+		}
+
+		// Optionally shorten the notation
+		$noble_gases = [
+				'He' => 2,
+				'Ne' => 10,
+				'Ar' => 18,
+				'Kr' => 36,
+				'Xe' => 54,
+				'Rn' => 86,
+		];
+
+		if ($shortened) {
+			foreach (array_reverse($noble_gases) as $key => $gas) {
+				if ($element_number > $gas) {
+					$replace_notation = electron_config($gas, false);
+					$shortened_notation = '[' . $key . ']';
+					return str_replace($replace_notation, $shortened_notation, $notation);
+				}
+			}
+		}
+
+		return $notation;
 	}
-	
-	return $notation;
 }
 
 return $electrons;

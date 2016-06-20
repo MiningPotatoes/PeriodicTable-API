@@ -4,8 +4,26 @@ namespace app;
 
 use app\core\BaseController;
 
+/**
+ * Class Controller
+ * api goes here
+ * @package app
+ */
 class Controller extends BaseController
 {
+    /** @var array $namesData - data extracted from the file data/names.php */
+    private $namesData;
+
+    /** @var array $electronsData - data extracted from the file data/electrons.php */
+    private $electronsData;
+
+    /** @var array $numbersData - data extracted from the file data/numbers.php */
+    private $numbersData;
+
+    /**
+     * Get the full name of an element given it's symbol.
+     * @return array
+     */
     protected function getNames()
     {
         $names = $this->getNamesData();
@@ -42,11 +60,19 @@ class Controller extends BaseController
         return $result;
     }
 
+    /**
+     * Alias for getElectrons
+     * @see getElectrons
+     */
     protected function getOrbitals()
     {
         return $this->getElectrons();
     }
 
+    /**
+     * Get the electronic configuration of an element given it's symbol.
+     * @return array
+     */
     protected function getElectrons()
     {
         $electrons = $this->getElectronsData();
@@ -94,15 +120,19 @@ class Controller extends BaseController
         return $result;
     }
 
+    /**
+     * Get the atomic number of an element given it's symbol.
+     * @return array
+     */
     protected function getNumbers()
     {
         $electrons = $this->getElectronsData();
         $numbers = $this->getNumbersData();
 
-        if(isset($_GET["elements"])) {
+        if(isset($this->request["elements"])) {
             $errorElements = [];
             // gets the element symbols from the URL
-            $elements = explode(',', $_GET["elements"]);
+            $elements = explode(',', $this->request["elements"]);
             foreach ($elements as $index => $symbol) {
                 if(in_array(ucfirst(strtolower($symbol)), array_keys($electrons))) {
                     $elements[$index] = ucfirst(strtolower($symbol));
@@ -119,8 +149,8 @@ class Controller extends BaseController
         // gets atomic numbers and possibly masses from $numbers, passes them to $resultsp
         foreach ($elements as $element) {
             $result[$element]["atomic"] = $numbers[$element]["atomic"];
-            if(isset($_GET["mass"])) {
-                if($_GET["mass"]) {
+            if(isset($this->request["mass"])) {
+                if($this->request["mass"]) {
                     $result[$element]["mass"] = $numbers[$element]["mass"];
                 }
             }
@@ -131,25 +161,49 @@ class Controller extends BaseController
                 $result[$error] = ["error" => "Invalid element!"];
             }
         }
+
+        return $result;
     }
 
+    /**
+     * ¯\_(ツ)_/¯
+     * @return array
+     */
     protected function getDankmemes()
     {
         return [69 => "( ͡° ͜ʖ ͡°)"];
     }
 
+    /**
+     * Extract and return data from file
+     * @return array|mixed
+     */
     private function getNamesData()
     {
-        return require_once('data/names.php');
+        return isset($this->namesData)
+            ? $this->namesData
+            : ($this->namesData = require(BASE_PATH . '/data/names.php'));
     }
 
+    /**
+     * Extract and return data from file
+     * @return array|mixed
+     */
     private function getElectronsData()
     {
-        return require_once('data/electrons.php');
+        return isset($this->electronsData)
+            ? $this->electronsData
+            : ($this->electronsData = require(BASE_PATH . '/data/electrons.php'));
     }
 
+    /**
+     * Extract and return data from file
+     * @return array|mixed
+     */
     private function getNumbersData()
     {
-        return require_once('data/electrons.php');
+        return isset($this->numbersData)
+            ? $this->numbersData
+            : ($this->numbersData = require(BASE_PATH . '/data/numbers.php'));
     }
 }

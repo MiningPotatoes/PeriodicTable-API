@@ -6,6 +6,8 @@ This is a RESTful API for the Periodic Table of Elements.
 The basic syntax is:
 `https://nickclifford.me/api/pt.php?mode={mode}&elements={element symbols}`
 
+Example url: `https://nickclifford.me/api/pt.php?mode=names&elements=H,Ar,Hf`
+
 Certain options can be added to the GET parameters as well.
 
 The `elements` field contains comma-seperated element symbols. If the `elements` field is removed, **all** elements will be used.
@@ -27,3 +29,7 @@ The answer? **Every single element on the Periodic Table!** Pretty cool, right?
 If you find a bug or issue, please submit an issue here on [GitHub](https://github.com/MiningPotatoes/PeriodicTable-API).
 
 If you want to help me <del>cry</del> code, feel free to submit a pull request with your code!
+
+## Tests
+
+Do `composer install` (or install phpunit globally) and  `./vendor/bin/phpunit tests/ControllerTest.php`

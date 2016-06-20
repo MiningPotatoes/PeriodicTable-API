@@ -18,11 +18,12 @@ try {
     $response = ['error' => 'Unknown error'];
     @file_put_contents(
         './logs/errors.log',
-        $e->getCode() . ":\t" .
-        $e->getMessage() . PHP_EOL .
-        $e->getFile() . PHP_EOL .
-        $e->getLine() . PHP_EOL .
-        $e->getTraceAsString() . PHP_EOL
+        'Code: ' . $e->getCode() . ";\t" .
+        'error: ' . $e->getMessage() . PHP_EOL .
+        'File: ' . $e->getFile() . PHP_EOL .
+        'Line: ' . $e->getLine() . PHP_EOL .
+        $e->getTraceAsString() . PHP_EOL,
+        FILE_APPEND
     );
 }
 
